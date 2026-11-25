@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
-    <title data-i18n="main.title">OpenFront (ALPHA)</title>
+    <title>OpenFront | Kuni Front</title>
     <link rel="manifest" href="<%- manifestHref %>" />
     <link rel="icon" type="image/svg+xml" href="<%- faviconHref %>" />
     <!-- iOS takes its home-screen icon from here before the manifest. Without it
@@ -364,6 +364,53 @@
 
       gtag("config", "G-WQGQQ8RDN4");
     </script>
+
+    <!-- Kuni community portal controls. Core game and copyright notices are unchanged. -->
+    <style>
+      #kuni-site-tools {
+        position: fixed;
+        left: 18px;
+        bottom: 72px;
+        z-index: 45;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        max-width: calc(100vw - 36px);
+        padding: 11px 14px;
+        border: 1px solid rgba(111, 177, 253, .28);
+        border-radius: 14px;
+        background: rgba(7, 15, 29, .9);
+        box-shadow: 0 12px 36px rgba(0, 0, 0, .42);
+        color: #f8fafc;
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        backdrop-filter: blur(14px);
+      }
+      #kuni-site-tools strong {
+        display: block;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: .08em;
+      }
+      #kuni-site-tools strong span { color: #69b5ff; }
+      #kuni-site-tools small { display: block; font-size: 11px; color: #a9b7cb; margin-top: 3px; }
+      #kuni-site-tools .kuni-tools-actions { display: flex; align-items: center; gap: 7px; }
+      #kuni-site-tools a,
+      #kuni-site-tools button {
+        display: inline-block;
+        border: 1px solid rgba(119, 154, 192, .32);
+        border-radius: 8px;
+        background: #172a43;
+        color: #e5f2ff;
+        padding: 7px 10px;
+        font: 600 11px system-ui, sans-serif;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      #kuni-site-tools a:hover, #kuni-site-tools button:hover { background: #254b76; }
+      body.in-game #kuni-site-tools,
+      body.page-open #kuni-site-tools { display: none; }
+      @media (max-width: 720px) { #kuni-site-tools { display: none; } }
+    </style>
   </head>
 
   <body
@@ -782,5 +829,30 @@
         });
       </script>
     </footer>
+
+    <!-- Independent community-site controls; the actual OpenFront client runs below. -->
+    <aside id="kuni-site-tools" aria-label="Community game site">
+      <div>
+        <strong>KUNI <span>FRONT</span></strong>
+        <small>Independent OpenFront community build</small>
+      </div>
+      <div class="kuni-tools-actions">
+        <a href="https://github.com/kuni7-gif/OpenFrontIO" target="_blank" rel="noopener noreferrer">Source</a>
+        <button id="kuni-fullscreen" type="button">Fullscreen</button>
+      </div>
+    </aside>
+    <script>
+      document.getElementById("kuni-fullscreen")?.addEventListener("click", async () => {
+        try {
+          if (document.fullscreenElement) {
+            await document.exitFullscreen();
+          } else {
+            await document.documentElement.requestFullscreen();
+          }
+        } catch (error) {
+          console.warn("Fullscreen could not be started", error);
+        }
+      });
+    </script>
   </body>
 </html>
