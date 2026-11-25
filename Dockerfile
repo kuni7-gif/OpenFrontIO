@@ -103,6 +103,29 @@ ENV GIT_COMMIT="$GIT_COMMIT"
 
 RUN <<'EOF' tee /usr/local/bin/start.sh
 #!/bin/sh
+set -eu
+
+# Platform hosting (e.g. Railway) can choose the public ingress PORT.
+# The game master stays on 3000 and workers on 3001+, so Nginx alone
+# must bind the externally assigned port.
+if [ -n "${PORT:-}" ]; then
+    case "$PORT" in
+        *[!0-9]*|"")
+            echo "PORT must be a numeric TCP port; got '$PORT'" >&2
+            exit 1
+            ;;
+    esac
+    if [ "$PORT" -lt 1 ] || [ "$PORT" -gt 65535 ]; then
+        echo "PORT out of range: $PORT" >&2
+        exit 1
+    fi
+    if [ "$PORT" -ge 3000 ] && [ "$PORT" -le 4096 ]; then
+        echo "PORT $PORT conflicts with potential OpenFront master/worker ports; use 8080." >&2
+        exit 1
+    fi
+    sed -i "s/listen 80 default_server;/listen ${PORT} default_server;/" /etc/nginx/conf.d/default.conf
+fi
+
 # Generate the create-game nginx upstream from NUM_WORKERS before nginx starts.
 /usr/local/bin/generate-nginx-upstream.sh
 
