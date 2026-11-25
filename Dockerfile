@@ -14,8 +14,7 @@ COPY packages/engine-api/package.json ./packages/engine-api/
 COPY packages/engine-lib/package.json ./packages/engine-lib/
 COPY packages/shared/package.json ./packages/shared/
 COPY packages/zbin/package.json ./packages/zbin/
-RUN --mount=type=cache,id=kuni-npm-build,target=/root/.npm \
-    npm ci --ignore-scripts
+RUN npm ci --ignore-scripts
 
 # Copy only what's needed for build
 COPY tsconfig.json tsconfig.base.json ./
@@ -47,8 +46,7 @@ COPY packages/engine-api/package.json ./packages/engine-api/
 COPY packages/engine-lib/package.json ./packages/engine-lib/
 COPY packages/shared/package.json ./packages/shared/
 COPY packages/zbin/package.json ./packages/zbin/
-RUN --mount=type=cache,id=kuni-npm-prod,target=/root/.npm \
-    npm ci --omit=dev --ignore-scripts
+RUN npm ci --omit=dev --ignore-scripts
 
 # Final production image
 FROM base
